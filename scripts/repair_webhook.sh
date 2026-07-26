@@ -51,6 +51,16 @@ for vhost in "${VHOSTS[@]}"; do
       $text = file_get_contents($path);
       if ($text === false) { exit(2); }
       $fixed = str_replace("|local-webhook-router\\.php", "", $text);
+      if (!str_contains($fixed, "MIRZA_LOG_PROTECTION")) {
+          $protection = "    # MIRZA_LOG_PROTECTION\n"
+              . "    <FilesMatch \"^(?:error_log|log\\.txt|.*\\.log)$\">\n"
+              . "        Require all denied\n"
+              . "    </FilesMatch>\n"
+              . "    <LocationMatch \"^/(?:logs)(?:/|$)\">\n"
+              . "        Require all denied\n"
+              . "    </LocationMatch>\n\n";
+          $fixed = str_replace("</VirtualHost>", $protection . "</VirtualHost>", $fixed);
+      }
       if (file_put_contents($path, $fixed, LOCK_EX) === false) { exit(3); }
   ' "$vhost"
   echo "Repaired: $vhost"

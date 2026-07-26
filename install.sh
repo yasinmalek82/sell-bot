@@ -176,7 +176,11 @@ cat > "/etc/apache2/sites-available/${BOT_DOMAIN}.conf" <<APACHE
     <FilesMatch "^(?:config(?:\.local(?:\.example)?)?\.php|table\.php|reseller-webhook\.php|composer\.(?:json|lock)|\.env)$">
         Require all denied
     </FilesMatch>
-    <LocationMatch "^/(?:migrations|scripts|tests|cronbot|vendor|vpnbot)(?:/|$)">
+    # MIRZA_LOG_PROTECTION
+    <FilesMatch "^(?:error_log|log\.txt|.*\.log)$">
+        Require all denied
+    </FilesMatch>
+    <LocationMatch "^/(?:migrations|scripts|tests|cronbot|vendor|vpnbot|logs)(?:/|$)">
         Require all denied
     </LocationMatch>
 
@@ -213,6 +217,8 @@ find "$APP_DIR" -type d -exec chmod 0750 {} +
 find "$APP_DIR" -type f -exec chmod 0640 {} +
 chmod 0640 "$APP_DIR/config.local.php"
 chmod 0750 "$APP_DIR/vpnbot"
+chmod 0750 "$APP_DIR/scripts/manage.sh" "$APP_DIR/scripts/repair_webhook.sh"
+ln -sf "$APP_DIR/scripts/manage.sh" /usr/local/bin/sell-bot
 touch "$APP_DIR/error_log" "$APP_DIR/log.txt" "$APP_DIR/panel/log.txt"
 chown www-data:www-data "$APP_DIR/error_log" "$APP_DIR/log.txt" "$APP_DIR/panel/log.txt" "$APP_DIR/vpnbot"
 
@@ -246,3 +252,4 @@ echo
 echo 'Mirza installation completed successfully.'
 echo "Admin panel: https://${BOT_DOMAIN}/panel/"
 echo 'Credentials were saved to /root/mirza-install.txt (root-only).'
+echo 'Management menu: sudo sell-bot'

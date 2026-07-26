@@ -7,7 +7,7 @@
 روی Ubuntu 22.04 یا 24.04 با کاربر `root` اجرا کنید:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.1/install.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/install.sh \
   -o /tmp/sell-bot-install.sh
 sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 ```
@@ -15,6 +15,25 @@ sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 نصب‌کننده دامنه، ایمیل SSL، توکن تازه ربات، آیدی عددی ادمین، نام کاربری ربات و رمز پنل مدیریت را می‌پرسد؛ سپس Apache، MySQL، PHP، SSL، دیتابیس، Cron و Webhook را خودکار آماده می‌کند.
 
 > قبل از اجرا، `A Record` دامنه را روی IP سرور تنظیم کنید و توکن قبلی ربات را در BotFather تعویض کنید.
+
+## منوی مدیریت سرور
+
+پس از نصب، با این فرمان منوی تعاملی مدیریت باز می‌شود:
+
+```bash
+sudo sell-bot
+```
+
+از این منو می‌توانید وضعیت سرویس و Webhook را ببینید، توکن ربات را با اعتبارسنجی Telegram عوض کنید، Webhook را تعمیر کنید، رمز پنل را تغییر دهید، Backup بگیرید یا نصب را با تأیید صریح حذف کنید.
+
+برای اضافه‌کردن این منو به نصب‌های قدیمی‌تر:
+
+```bash
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/scripts/install_manager.sh \
+  -o /tmp/install-sell-bot-manager.sh
+sudo bash /tmp/install-sell-bot-manager.sh
+sudo sell-bot
+```
 
 ## امکانات این نسخه
 
@@ -45,7 +64,7 @@ sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 فرمان نصب تعاملی:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.1/install.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/install.sh \
   -o /tmp/sell-bot-install.sh
 sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 ```
@@ -53,7 +72,7 @@ sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 برای اجرای کاملاً غیرتعاملی:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.1/install.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/install.sh \
   -o /tmp/sell-bot-install.sh
 sudo env MIRZA_REPO=yasinmalek82/sell-bot \
   BOT_DOMAIN=bot.example.com \
@@ -112,7 +131,7 @@ php tests/test_xui_payload_match_docs.php
 اگر پنل وب باز می‌شود ولی ربات تلگرام پاسخ نمی‌دهد، روی سرور اجرا کنید:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/scripts/repair_webhook.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/scripts/repair_webhook.sh \
   -o /tmp/repair-mirza-webhook.sh
 sudo bash /tmp/repair-mirza-webhook.sh
 ```
