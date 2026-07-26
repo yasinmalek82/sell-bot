@@ -7,8 +7,9 @@
 روی Ubuntu 22.04 یا 24.04 با کاربر `root` اجرا کنید:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install.sh \
-  | sudo MIRZA_REPO=yasinmalek82/sell-bot bash
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.1/install.sh \
+  -o /tmp/sell-bot-install.sh
+sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 ```
 
 نصب‌کننده دامنه، ایمیل SSL، توکن تازه ربات، آیدی عددی ادمین، نام کاربری ربات و رمز پنل مدیریت را می‌پرسد؛ سپس Apache، MySQL، PHP، SSL، دیتابیس، Cron و Webhook را خودکار آماده می‌کند.
@@ -44,22 +45,24 @@ curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install.
 فرمان نصب تعاملی:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install.sh \
-  | sudo MIRZA_REPO=yasinmalek82/sell-bot bash
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.1/install.sh \
+  -o /tmp/sell-bot-install.sh
+sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 ```
 
 برای اجرای کاملاً غیرتعاملی:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install.sh | sudo env \
-  MIRZA_REPO=yasinmalek82/sell-bot \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.1/install.sh \
+  -o /tmp/sell-bot-install.sh
+sudo env MIRZA_REPO=yasinmalek82/sell-bot \
   BOT_DOMAIN=bot.example.com \
   LETSENCRYPT_EMAIL=admin@example.com \
   BOT_TOKEN='NEW_TELEGRAM_TOKEN' \
   BOT_ADMIN_ID='123456789' \
   BOT_USERNAME='example_bot' \
   PANEL_ADMIN_PASSWORD='A-Strong-Panel-Password' \
-  bash
+  bash /tmp/sell-bot-install.sh
 ```
 
 رمزهای نصب در `/root/mirza-install.txt` با سطح دسترسی `600` نگه‌داری می‌شوند. تنظیمات خصوصی برنامه در `/var/www/mirza/config.local.php` هستند و داخل Git قرار نمی‌گیرند.
