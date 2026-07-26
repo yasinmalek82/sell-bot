@@ -2,6 +2,19 @@
 
 نسخه بهینه‌شده ربات فروش اشتراک با پشتیبانی از پنل **3x-ui / Sanaei**، منوی اختصاصی نمایندگان در همان ربات اصلی، قیمت همکاری مستقل و محدودیت IP برای محصولات نامحدود.
 
+## نصب سریع روی سرور
+
+روی Ubuntu 22.04 یا 24.04 با کاربر `root` اجرا کنید:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install.sh \
+  | sudo MIRZA_REPO=yasinmalek82/sell-bot bash
+```
+
+نصب‌کننده دامنه، ایمیل SSL، توکن تازه ربات، آیدی عددی ادمین، نام کاربری ربات و رمز پنل مدیریت را می‌پرسد؛ سپس Apache، MySQL، PHP، SSL، دیتابیس، Cron و Webhook را خودکار آماده می‌کند.
+
+> قبل از اجرا، `A Record` دامنه را روی IP سرور تنظیم کنید و توکن قبلی ربات را در BotFather تعویض کنید.
+
 ## امکانات این نسخه
 
 - اتصال مستقیم به 3x-ui از طریق `x-ui_single.php`
@@ -28,18 +41,18 @@
 
 ## نصب مستقیم از GitHub
 
-برای لینک نصب یک‌مرحله‌ای، این پوشه را در یک مخزن عمومی GitHub قرار دهید. فایل‌های خصوصی و لاگ‌ها توسط `.gitignore` حذف شده‌اند. سپس روی سرور اجرا کنید:
+فرمان نصب تعاملی:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/REPO/main/install.sh \
-  | sudo MIRZA_REPO=OWNER/REPO bash
+curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install.sh \
+  | sudo MIRZA_REPO=yasinmalek82/sell-bot bash
 ```
 
 برای اجرای کاملاً غیرتعاملی:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/REPO/main/install.sh | sudo env \
-  MIRZA_REPO=OWNER/REPO \
+curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install.sh | sudo env \
+  MIRZA_REPO=yasinmalek82/sell-bot \
   BOT_DOMAIN=bot.example.com \
   LETSENCRYPT_EMAIL=admin@example.com \
   BOT_TOKEN='NEW_TELEGRAM_TOKEN' \
@@ -59,28 +72,7 @@ curl -fsSL https://raw.githubusercontent.com/OWNER/REPO/main/install.sh | sudo e
 
 مسیرهای `config`، `migrations`، `scripts`، `tests`، `cronbot`، `vendor` و `vpnbot` مستقیماً از وب قابل دسترسی نیستند.
 
-## انتشار امن در GitHub
-
-قبل از اولین Push:
-
-```bash
-cp config.local.example.php config.local.php
-git init
-git add .
-git status
-git commit -m "Initial Mirza Premium release"
-git branch -M main
-git remote add origin git@github.com:OWNER/REPO.git
-git push -u origin main
-```
-
-حتماً در خروجی `git status` بررسی کنید که `config.local.php`، لاگ‌ها و پوشه ربات‌های ساخته‌شده وجود نداشته باشند. پروژه تحت AGPL-3.0 است؛ فایل `LICENSE` و اطلاع‌رسانی کد منبع باید حفظ شوند. برای مخزن خصوصی، ابتدا مخزن را با SSH یا GitHub CLI روی سرور Clone کنید و از ریشه پروژه اجرا کنید:
-
-```bash
-sudo MIRZA_SOURCE_DIR="$PWD" bash install.sh
-```
-
-لینک خام عمومی بدون احراز هویت برای مخزن خصوصی کار نمی‌کند.
+سورس این نسخه در [yasinmalek82/sell-bot](https://github.com/yasinmalek82/sell-bot) نگه‌داری می‌شود و تحت مجوز AGPL-3.0 است.
 
 ## نصب دیتابیس بدون نصب کامل سرور
 
