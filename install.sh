@@ -173,7 +173,7 @@ cat > "/etc/apache2/sites-available/${BOT_DOMAIN}.conf" <<APACHE
         RewriteRule ^telegram(?:/.*)?$ local-webhook-router.php [L,QSA]
     </Directory>
 
-    <FilesMatch "^(?:config(?:\.local(?:\.example)?)?\.php|table\.php|local-webhook-router\.php|reseller-webhook\.php|composer\.(?:json|lock)|\.env)$">
+    <FilesMatch "^(?:config(?:\.local(?:\.example)?)?\.php|table\.php|reseller-webhook\.php|composer\.(?:json|lock)|\.env)$">
         Require all denied
     </FilesMatch>
     <LocationMatch "^/(?:migrations|scripts|tests|cronbot|vendor|vpnbot)(?:/|$)">

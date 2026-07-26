@@ -106,3 +106,15 @@ php tests/test_xui_payload_match_docs.php
 - هیچ‌وقت `config.local.php` یا خروجی دیتابیس را Commit نکنید.
 - پنل 3x-ui را با SSL معتبر اجرا کنید و API آن را فقط برای IP سرور ربات باز بگذارید.
 - از دیتابیس و فایل تنظیمات به‌صورت منظم نسخه پشتیبان رمزنگاری‌شده بگیرید.
+
+## تعمیر Webhook نصب‌های v1.0.1
+
+اگر پنل وب باز می‌شود ولی ربات تلگرام پاسخ نمی‌دهد، روی سرور اجرا کنید:
+
+```bash
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/scripts/repair_webhook.sh \
+  -o /tmp/repair-mirza-webhook.sh
+sudo bash /tmp/repair-mirza-webhook.sh
+```
+
+این اسکریپت فقط VirtualHost مرتبط با دامنه تنظیم‌شده را اصلاح، Apache را اعتبارسنجی و Webhook تلگرام را دوباره ثبت می‌کند.
