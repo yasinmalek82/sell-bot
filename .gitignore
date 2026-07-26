@@ -1,0 +1,15 @@
+/config.local.php
+/error_log
+/log.txt
+/logs/*.log
+/storage/cache/*.json
+/.DS_Store
+/panel/log.txt
+/panel/.DS_Store
+/cronbot/error_log
+/cronbot/log.txt
+/vendor/.DS_Store
+/api/hash.txt
+/*cookie.txt
+/vpnbot/.DS_Store
+/vpnbot/[0-9]*/
