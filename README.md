@@ -23,7 +23,13 @@ Neo Bot combines subscription sales, customer management, reseller tools, and se
 
 Built for clean Ubuntu 22.04 and 24.04 servers with an automated production installer.
 
-[Download installer](https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.4/install.sh) · [View versions](https://github.com/yasinmalek82/sell-bot/tags)
+```bash
+curl -fsSL https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install-latest.sh -o /tmp/neo-bot-install.sh && sudo bash /tmp/neo-bot-install.sh
+```
+
+The quick installer automatically resolves and deploys the latest stable version.
+
+[Quick installer](https://raw.githubusercontent.com/yasinmalek82/sell-bot/main/install-latest.sh) · [View versions](https://github.com/yasinmalek82/sell-bot/tags)
 
 ## License
 
