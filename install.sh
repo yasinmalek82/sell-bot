@@ -13,7 +13,11 @@ DB_NAME="${DB_NAME:-mirza_bot}"
 DB_USER="${DB_USER:-mirza_bot}"
 LOCAL_SOURCE="${MIRZA_SOURCE_DIR:-}"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || true)"
+SCRIPT_SOURCE="${BASH_SOURCE[0]-}"
+SCRIPT_DIR=""
+if [[ -n $SCRIPT_SOURCE ]]; then
+  SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_SOURCE")" 2>/dev/null && pwd || true)"
+fi
 if [[ -z $LOCAL_SOURCE && -n $SCRIPT_DIR && -f $SCRIPT_DIR/config.php && -f $SCRIPT_DIR/table.php ]]; then
   LOCAL_SOURCE="$SCRIPT_DIR"
 fi
@@ -39,7 +43,10 @@ if [[ ${ID:-} != ubuntu || ! ${VERSION_ID:-} =~ ^(22\.04|24\.04)$ ]]; then
 fi
 
 ask() {
-  local variable="$1" prompt="$2" secret="${3:-0}" value="${!variable:-}"
+  local variable="$1" prompt="$2" secret="${3:-0}" value=""
+  if declare -p "$variable" >/dev/null 2>&1; then
+    value="${!variable}"
+  fi
   if [[ -z $value ]]; then
     if [[ ! -r /dev/tty ]]; then
       echo "Missing required environment variable: $variable" >&2
