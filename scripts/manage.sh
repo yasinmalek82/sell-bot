@@ -5,11 +5,11 @@ APP_DIR="${MIRZA_APP_DIR:-/var/www/mirza}"
 CONFIG_FILE="$APP_DIR/config.local.php"
 
 if [[ ${EUID} -ne 0 ]]; then
-  echo 'این ابزار باید با دسترسی root اجرا شود.' >&2
+  echo 'This tool must be run as root.' >&2
   exit 1
 fi
 if [[ ! $APP_DIR =~ ^/var/www/[A-Za-z0-9._-]+$ || ! -r $CONFIG_FILE ]]; then
-  echo "نصب معتبر میرزا در مسیر $APP_DIR پیدا نشد." >&2
+  echo "No valid Mirza installation was found at $APP_DIR." >&2
   exit 1
 fi
 
@@ -37,8 +37,8 @@ set_config() {
 telegram_result() {
   php -r '
     $data=json_decode(stream_get_contents(STDIN), true);
-    if (!is_array($data)) { echo "پاسخ نامعتبر"; exit(2); }
-    if (empty($data["ok"])) { echo $data["description"] ?? "خطای تلگرام"; exit(1); }
+    if (!is_array($data)) { echo "Invalid response"; exit(2); }
+    if (empty($data["ok"])) { echo $data["description"] ?? "Telegram error"; exit(1); }
     echo "ok";
   '
 }
@@ -46,11 +46,11 @@ telegram_result() {
 validate_token() {
   local token="$1" result
   [[ $token =~ ^[0-9]{6,12}:[A-Za-z0-9_-]{30,}$ ]] || {
-    echo 'ساختار توکن نامعتبر است.' >&2
+    echo 'The token format is invalid.' >&2
     return 1
   }
   result="$(curl -fsS "https://api.telegram.org/bot${token}/getMe" | telegram_result)" || {
-    echo "توکن توسط تلگرام رد شد: $result" >&2
+    echo "Telegram rejected the token: $result" >&2
     return 1
   }
 }
@@ -72,24 +72,24 @@ show_status() {
   token="$(get_config bot_token)"
   domain="$(get_config domain)"
   echo
-  echo "دامنه: https://${domain}"
-  echo "مسیر برنامه: ${APP_DIR}"
+  echo "Domain: https://${domain}"
+  echo "Application path: ${APP_DIR}"
   echo "Apache: $(systemctl is-active apache2 2>/dev/null || true)"
   echo "MySQL: $(systemctl is-active mysql 2>/dev/null || true)"
   echo "Health HTTP: $(curl -sS -o /dev/null -w '%{http_code}' "https://${domain}/health.php" || echo unavailable)"
   curl -fsS "https://api.telegram.org/bot${token}/getWebhookInfo" | php -r '
     $data=json_decode(stream_get_contents(STDIN), true); $i=$data["result"] ?? [];
-    echo "Webhook: ", ($i["url"] ?? "ثبت نشده"), PHP_EOL;
-    echo "Pending: ", ($i["pending_update_count"] ?? "نامشخص"), PHP_EOL;
-    echo "آخرین خطا: ", ($i["last_error_message"] ?? "ندارد"), PHP_EOL;
-  ' || echo 'دریافت وضعیت تلگرام ناموفق بود.'
+    echo "Webhook: ", ($i["url"] ?? "not registered"), PHP_EOL;
+    echo "Pending updates: ", ($i["pending_update_count"] ?? "unknown"), PHP_EOL;
+    echo "Last error: ", ($i["last_error_message"] ?? "none"), PHP_EOL;
+  ' || echo 'Unable to retrieve Telegram status.'
   echo
 }
 
 change_token() {
   local old_token new_token username config_backup
   old_token="$(get_config bot_token)"
-  read -r -s -p 'توکن جدید BotFather: ' new_token </dev/tty; echo
+  read -r -s -p 'New BotFather token: ' new_token </dev/tty; echo
   validate_token "$new_token" || return 1
   username="$(curl -fsS "https://api.telegram.org/bot${new_token}/getMe" | php -r '
     $d=json_decode(stream_get_contents(STDIN), true); echo $d["result"]["username"] ?? "";
@@ -105,14 +105,14 @@ change_token() {
     cp -a "$config_backup" "$CONFIG_FILE"
     chown root:www-data "$CONFIG_FILE"; chmod 0640 "$CONFIG_FILE"
     rm -f -- "$config_backup"
-    echo 'ثبت Webhook توکن جدید شکست خورد؛ تنظیم قبلی بازگردانده شد.' >&2
+    echo 'Registering the new webhook failed; the previous configuration was restored.' >&2
     return 1
   fi
   rm -f -- "$config_backup"
   if [[ $old_token != "$new_token" ]]; then
     curl -fsS -X POST "https://api.telegram.org/bot${old_token}/deleteWebhook" >/dev/null 2>&1 || true
   fi
-  echo "توکن جدید برای @${username} ذخیره و Webhook ثبت شد."
+  echo "The new token for @${username} was saved and its webhook was registered."
 }
 
 repair_webhook() {
@@ -120,16 +120,16 @@ repair_webhook() {
     "$APP_DIR/scripts/repair_webhook.sh"
   else
     register_webhook
-    echo 'Webhook دوباره ثبت شد.'
+    echo 'The webhook was registered again.'
   fi
 }
 
 change_admin_password() {
   local first second
-  read -r -s -p 'رمز جدید پنل (حداقل ۱۲ کاراکتر): ' first </dev/tty; echo
-  read -r -s -p 'تکرار رمز: ' second </dev/tty; echo
-  [[ ${#first} -ge 12 ]] || { echo 'رمز کوتاه است.' >&2; return 1; }
-  [[ $first == "$second" ]] || { echo 'دو رمز یکسان نیستند.' >&2; return 1; }
+  read -r -s -p 'New admin password (at least 12 characters): ' first </dev/tty; echo
+  read -r -s -p 'Repeat the new password: ' second </dev/tty; echo
+  [[ ${#first} -ge 12 ]] || { echo 'The password is too short.' >&2; return 1; }
+  [[ $first == "$second" ]] || { echo 'The passwords do not match.' >&2; return 1; }
   PANEL_PASSWORD="$first" php -r '
     require $argv[1] . "/config.php";
     $hash=password_hash((string)getenv("PANEL_PASSWORD"), PASSWORD_BCRYPT, ["cost"=>12]);
@@ -137,39 +137,39 @@ change_admin_password() {
     $stmt->execute([$hash, "admin"]);
     if ($stmt->rowCount() < 1) { fwrite(STDERR, "Admin not found\n"); exit(2); }
   ' "$APP_DIR"
-  echo 'رمز پنل مدیریت تغییر کرد.'
+  echo 'The admin panel password was changed.'
 }
 
 create_backup() {
   local db_host db_name db_user db_pass stamp backup_dir cnf
   db_host="$(get_config db_host)"; db_name="$(get_config db_name)"
   db_user="$(get_config db_user)"; db_pass="$(get_config db_pass)"
-  [[ $db_name =~ ^[A-Za-z0-9_]+$ ]] || { echo 'نام دیتابیس ناامن است.' >&2; return 1; }
+  [[ $db_name =~ ^[A-Za-z0-9_]+$ ]] || { echo 'The database name is unsafe.' >&2; return 1; }
   stamp="$(date +%Y%m%d-%H%M%S)"; backup_dir="/var/backups/mirza/${stamp}"
   install -d -m 0700 "$backup_dir"
   cnf="$(mktemp /tmp/mirza-mysql.XXXXXX)"; chmod 0600 "$cnf"
   printf '[client]\nhost=%s\nuser=%s\npassword=%s\n' "$db_host" "$db_user" "$db_pass" > "$cnf"
   if ! mysqldump --defaults-extra-file="$cnf" --single-transaction --routines --triggers "$db_name" | gzip -9 > "$backup_dir/database.sql.gz"; then
     rm -f -- "$cnf"
-    echo 'Backup دیتابیس ناموفق بود.' >&2
+    echo 'The database backup failed.' >&2
     return 1
   fi
   cp -a "$CONFIG_FILE" "$backup_dir/config.local.php"
   chmod 0600 "$backup_dir"/*
   rm -f -- "$cnf"
-  echo "Backup ساخته شد: $backup_dir"
+  echo "Backup created: $backup_dir"
 }
 
 uninstall_bot() {
   local confirm token domain db_name db_user
-  echo 'هشدار: برنامه، دیتابیس، کاربر دیتابیس، Cron و VirtualHost حذف می‌شوند.'
-  echo 'Backupهای /var/backups/mirza حذف نمی‌شوند.'
-  read -r -p 'برای ادامه دقیقاً REMOVE sell-bot را بنویس: ' confirm </dev/tty
-  [[ $confirm == 'REMOVE sell-bot' ]] || { echo 'لغو شد.'; return 0; }
+  echo 'WARNING: The application, database, database user, cron job, and VirtualHost will be removed.'
+  echo 'Backups in /var/backups/mirza will be preserved.'
+  read -r -p 'Type REMOVE sell-bot exactly to continue: ' confirm </dev/tty
+  [[ $confirm == 'REMOVE sell-bot' ]] || { echo 'Cancelled.'; return 0; }
   token="$(get_config bot_token)"; domain="$(get_config domain)"
   db_name="$(get_config db_name)"; db_user="$(get_config db_user)"
   [[ $db_name =~ ^[A-Za-z0-9_]+$ && $db_user =~ ^[A-Za-z0-9_]+$ ]] || {
-    echo 'شناسه دیتابیس ناامن است؛ حذف متوقف شد.' >&2; return 1;
+    echo 'The database identifier is unsafe; uninstall stopped.' >&2; return 1;
   }
   curl -fsS -X POST "https://api.telegram.org/bot${token}/deleteWebhook" >/dev/null 2>&1 || true
   rm -f -- /etc/cron.d/mirza
@@ -181,22 +181,22 @@ uninstall_bot() {
   certbot delete --cert-name "$domain" --non-interactive >/dev/null 2>&1 || true
   rm -rf -- "$APP_DIR"
   rm -f -- /usr/local/bin/sell-bot
-  echo 'ربات و اجزای نصب‌شده حذف شدند. Backupها حفظ شدند.'
+  echo 'The bot and installed components were removed. Backups were preserved.'
   exit 0
 }
 
 while true; do
   echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-  echo ' مدیریت Sell Bot Premium'
+  echo ' Sell Bot Premium Management'
   echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-  echo '1) وضعیت سرویس و Webhook'
-  echo '2) تغییر توکن ربات تلگرام'
-  echo '3) تعمیر و ثبت مجدد Webhook'
-  echo '4) تغییر رمز پنل مدیریت'
-  echo '5) تهیه Backup'
-  echo '6) حذف کامل ربات از سرور'
-  echo '0) خروج'
-  read -r -p 'انتخاب: ' choice </dev/tty
+  echo '1) Service and webhook status'
+  echo '2) Change Telegram bot token'
+  echo '3) Repair and re-register webhook'
+  echo '4) Change admin panel password'
+  echo '5) Create backup'
+  echo '6) Completely uninstall the bot'
+  echo '0) Exit'
+  read -r -p 'Select an option: ' choice </dev/tty
   case "$choice" in
     1) show_status ;;
     2) change_token ;;
@@ -205,6 +205,6 @@ while true; do
     5) create_backup ;;
     6) uninstall_bot ;;
     0) exit 0 ;;
-    *) echo 'گزینه نامعتبر است.' ;;
+    *) echo 'Invalid option.' ;;
   esac
 done

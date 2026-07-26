@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 APP_DIR="${MIRZA_APP_DIR:-/var/www/mirza}"
-RELEASE="${MIRZA_MANAGER_RELEASE:-v1.0.3}"
+RELEASE="${MIRZA_MANAGER_RELEASE:-v1.0.4}"
 BASE_URL="https://raw.githubusercontent.com/yasinmalek82/sell-bot/${RELEASE}/scripts"
 
 if [[ ${EUID} -ne 0 ]]; then

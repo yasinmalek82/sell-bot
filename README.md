@@ -7,7 +7,7 @@
 روی Ubuntu 22.04 یا 24.04 با کاربر `root` اجرا کنید:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/install.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.4/install.sh \
   -o /tmp/sell-bot-install.sh
 sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 ```
@@ -29,7 +29,7 @@ sudo sell-bot
 برای اضافه‌کردن این منو به نصب‌های قدیمی‌تر:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/scripts/install_manager.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.4/scripts/install_manager.sh \
   -o /tmp/install-sell-bot-manager.sh
 sudo bash /tmp/install-sell-bot-manager.sh
 sudo sell-bot
@@ -64,7 +64,7 @@ sudo sell-bot
 فرمان نصب تعاملی:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/install.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.4/install.sh \
   -o /tmp/sell-bot-install.sh
 sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 ```
@@ -72,7 +72,7 @@ sudo MIRZA_REPO=yasinmalek82/sell-bot bash /tmp/sell-bot-install.sh
 برای اجرای کاملاً غیرتعاملی:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/install.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.4/install.sh \
   -o /tmp/sell-bot-install.sh
 sudo env MIRZA_REPO=yasinmalek82/sell-bot \
   BOT_DOMAIN=bot.example.com \
@@ -131,7 +131,7 @@ php tests/test_xui_payload_match_docs.php
 اگر پنل وب باز می‌شود ولی ربات تلگرام پاسخ نمی‌دهد، روی سرور اجرا کنید:
 
 ```bash
-curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.3/scripts/repair_webhook.sh \
+curl -fL https://raw.githubusercontent.com/yasinmalek82/sell-bot/v1.0.4/scripts/repair_webhook.sh \
   -o /tmp/repair-mirza-webhook.sh
 sudo bash /tmp/repair-mirza-webhook.sh
 ```
